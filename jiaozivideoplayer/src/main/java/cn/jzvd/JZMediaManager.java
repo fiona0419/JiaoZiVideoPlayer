@@ -3,7 +3,6 @@ package cn.jzvd;
 import android.graphics.Point;
 import android.graphics.SurfaceTexture;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -15,13 +14,16 @@ import android.view.TextureView;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import tv.danmaku.ijk.media.player.IMediaPlayer;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
+
 /**
  * <p>统一管理MediaPlayer的地方,只有一个mediaPlayer实例，那么不会有多个视频同时播放，也节省资源。</p>
  * <p>Unified management MediaPlayer place, there is only one MediaPlayer instance, then there will be no more video broadcast at the same time, also save resources.</p>
  * Created by Nathen
  * On 2015/11/30 15:39
  */
-public class JZMediaManager implements TextureView.SurfaceTextureListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener, MediaPlayer.OnSeekCompleteListener, MediaPlayer.OnErrorListener, MediaPlayer.OnInfoListener, MediaPlayer.OnVideoSizeChangedListener {
+public class JZMediaManager implements TextureView.SurfaceTextureListener, IjkMediaPlayer.OnPreparedListener, IjkMediaPlayer.OnCompletionListener, IjkMediaPlayer.OnBufferingUpdateListener, IjkMediaPlayer.OnSeekCompleteListener, IjkMediaPlayer.OnErrorListener, IjkMediaPlayer.OnInfoListener, IjkMediaPlayer.OnVideoSizeChangedListener {
     public static final int HANDLER_PREPARE = 0;
     public static final int HANDLER_RELEASE = 2;
     public static final String TAG = "JiaoZiVideoPlayer";
@@ -30,8 +32,8 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     public static String CURRENT_PLAYING_URL;
     public static boolean CURRENT_PLING_LOOP;
     public static Map<String, String> MAP_HEADER_DATA;
-    private static JZMediaManager JZMediaManager;
-    public MediaPlayer mediaPlayer = new MediaPlayer();
+    private static cn.jzvd.JZMediaManager JZMediaManager;
+    public IjkMediaPlayer mediaPlayer = new IjkMediaPlayer();
     public int currentVideoWidth = 0;
     public int currentVideoHeight = 0;
     HandlerThread mMediaHandlerThread;
@@ -45,7 +47,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
         mainThreadHandler = new Handler();
     }
 
-    public static JZMediaManager instance() {
+    public static cn.jzvd.JZMediaManager instance() {
         if (JZMediaManager == null) {
             JZMediaManager = new JZMediaManager();
         }
@@ -100,7 +102,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
+    public void onPrepared(IMediaPlayer mp) {
         mediaPlayer.start();
         mainThreadHandler.post(new Runnable() {
             @Override
@@ -113,7 +115,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     }
 
     @Override
-    public void onCompletion(MediaPlayer mp) {
+    public void onCompletion(IMediaPlayer mp) {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -125,7 +127,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     }
 
     @Override
-    public void onBufferingUpdate(MediaPlayer mp, final int percent) {
+    public void onBufferingUpdate(IMediaPlayer mp, final int percent) {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -137,7 +139,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     }
 
     @Override
-    public void onSeekComplete(MediaPlayer mp) {
+    public void onSeekComplete(IMediaPlayer mp) {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -149,7 +151,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     }
 
     @Override
-    public boolean onError(MediaPlayer mp, final int what, final int extra) {
+    public boolean onError(IMediaPlayer mp, final int what, final int extra) {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -162,7 +164,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
     }
 
     @Override
-    public boolean onInfo(MediaPlayer mp, final int what, final int extra) {
+    public boolean onInfo(IMediaPlayer mp, final int what, final int extra) {
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -174,10 +176,24 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
         return false;
     }
 
+//    @Override
+//    public void onVideoSizeChanged(IMediaPlayer mp, int width, int height) {
+//        currentVideoWidth = width;
+//        currentVideoHeight = height;
+//        mainThreadHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (JZVideoPlayerManager.getCurrentJzvd() != null) {
+//                    JZVideoPlayerManager.getCurrentJzvd().onVideoSizeChanged();
+//                }
+//            }
+//        });
+//    }
+
     @Override
-    public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
-        currentVideoWidth = width;
-        currentVideoHeight = height;
+    public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int i, int i1, int i2, int i3) {
+        currentVideoWidth = i;
+        currentVideoHeight = i1;
         mainThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -202,18 +218,18 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, Media
                         currentVideoWidth = 0;
                         currentVideoHeight = 0;
                         mediaPlayer.release();
-                        mediaPlayer = new MediaPlayer();
+                        mediaPlayer = new IjkMediaPlayer();
                         mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
                         mediaPlayer.setLooping(CURRENT_PLING_LOOP);
-                        mediaPlayer.setOnPreparedListener(JZMediaManager.this);
-                        mediaPlayer.setOnCompletionListener(JZMediaManager.this);
-                        mediaPlayer.setOnBufferingUpdateListener(JZMediaManager.this);
+                        mediaPlayer.setOnPreparedListener(cn.jzvd.JZMediaManager.this);
+                        mediaPlayer.setOnCompletionListener(cn.jzvd.JZMediaManager.this);
+                        mediaPlayer.setOnBufferingUpdateListener(cn.jzvd.JZMediaManager.this);
                         mediaPlayer.setScreenOnWhilePlaying(true);
-                        mediaPlayer.setOnSeekCompleteListener(JZMediaManager.this);
-                        mediaPlayer.setOnErrorListener(JZMediaManager.this);
-                        mediaPlayer.setOnInfoListener(JZMediaManager.this);
-                        mediaPlayer.setOnVideoSizeChangedListener(JZMediaManager.this);
-                        Class<MediaPlayer> clazz = MediaPlayer.class;
+                        mediaPlayer.setOnSeekCompleteListener(cn.jzvd.JZMediaManager.this);
+                        mediaPlayer.setOnErrorListener(cn.jzvd.JZMediaManager.this);
+                        mediaPlayer.setOnInfoListener(cn.jzvd.JZMediaManager.this);
+                        mediaPlayer.setOnVideoSizeChangedListener(cn.jzvd.JZMediaManager.this);
+                        Class<IjkMediaPlayer> clazz = IjkMediaPlayer.class;
                         Method method = clazz.getDeclaredMethod("setDataSource", String.class, Map.class);
                         method.invoke(mediaPlayer, CURRENT_PLAYING_URL, MAP_HEADER_DATA);
                         mediaPlayer.prepareAsync();
