@@ -282,7 +282,9 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
 
         mScreenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
         mScreenHeight = getContext().getResources().getDisplayMetrics().heightPixels;
-        mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+        if (isInEditMode()) {
+            mAudioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+        }
         mHandler = new Handler();
 
         try {
