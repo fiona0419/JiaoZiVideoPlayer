@@ -201,9 +201,7 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
             JZVideoPlayerManager.getCurrentJzvd().currentState = CURRENT_STATE_NORMAL;
             JZVideoPlayerManager.getFirstFloor().clearFloatScreen();
             JZMediaManager.instance().releaseMediaPlayer();
-            if (JZMediaManager.textureView != null && JZMediaManager.textureView.getParent() != null) {
-                ((ViewGroup) JZMediaManager.textureView.getParent()).removeView(JZMediaManager.textureView);
-            }
+            JZMediaManager.textureView = null;
             JZVideoPlayerManager.setFirstFloor(null);
             return true;
         }
@@ -214,9 +212,7 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
         if (JZVideoPlayerManager.getCurrentJzvd() != null &&
                 JZVideoPlayerManager.getCurrentJzvd().currentScreen != SCREEN_WINDOW_FULLSCREEN) {
             JZMediaManager.instance().releaseMediaPlayer();
-            if (JZMediaManager.textureView != null && JZMediaManager.textureView.getParent() != null) {
-                ((ViewGroup) JZMediaManager.textureView.getParent()).removeView(JZMediaManager.textureView);
-            }
+            JZMediaManager.textureView = null;
             JZVideoPlayerManager.setFirstFloor(null);
             JZVideoPlayerManager.setSecondFloor(null);
             return false;
