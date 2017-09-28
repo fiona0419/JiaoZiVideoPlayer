@@ -94,7 +94,7 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
         }
     };
     protected static JZUserAction JZ_USER_EVENT;
-    protected static Timer UPDATE_PROGRESS_TIMER;
+    protected Timer UPDATE_PROGRESS_TIMER;
     public int currentState = -1;
     public int currentScreen = -1;
     public boolean loop = false;
@@ -202,6 +202,7 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
             JZVideoPlayerManager.getFirstFloor().clearFloatScreen();
             JZMediaManager.instance().releaseMediaPlayer();
             JZMediaManager.textureView = null;
+            JZMediaManager.savedSurfaceTexture = null;
             JZVideoPlayerManager.setFirstFloor(null);
             return true;
         }
@@ -213,6 +214,7 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
                 JZVideoPlayerManager.getCurrentJzvd().currentScreen != SCREEN_WINDOW_FULLSCREEN) {
             JZMediaManager.instance().releaseMediaPlayer();
             JZMediaManager.textureView = null;
+            JZMediaManager.savedSurfaceTexture = null;
             JZVideoPlayerManager.setFirstFloor(null);
             JZVideoPlayerManager.setSecondFloor(null);
             return false;
