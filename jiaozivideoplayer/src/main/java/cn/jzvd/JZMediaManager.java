@@ -10,6 +10,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.ViewGroup;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -240,6 +241,10 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, IjkMe
                     break;
                 case HANDLER_RELEASE:
                     mediaPlayer.release();
+                    if (textureView.getParent() != null) {
+                        ViewGroup container = (ViewGroup) textureView.getParent();
+                        container.removeView(textureView);
+                    }
                     break;
             }
         }

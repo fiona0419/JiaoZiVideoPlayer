@@ -207,6 +207,18 @@ public abstract class JZVideoPlayer extends FrameLayout implements View.OnClickL
         return false;
     }
 
+    public static boolean backPressSupport() {
+        if (JZVideoPlayerManager.getCurrentJzvd() != null &&
+                JZVideoPlayerManager.getCurrentJzvd().currentScreen != SCREEN_WINDOW_FULLSCREEN) {
+            JZMediaManager.instance().releaseMediaPlayer();
+            JZVideoPlayerManager.setFirstFloor(null);
+            JZVideoPlayerManager.setSecondFloor(null);
+            return false;
+        } else {
+            return backPress();
+        }
+    }
+
     public static void showSupportActionBar(Context context) {
         if (ACTION_BAR_EXIST && JZUtils.getAppCompActivity(context) != null) {
             ActionBar ab = JZUtils.getAppCompActivity(context).getSupportActionBar();
