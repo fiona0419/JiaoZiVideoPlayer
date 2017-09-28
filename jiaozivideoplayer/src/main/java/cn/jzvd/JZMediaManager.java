@@ -241,7 +241,7 @@ public class JZMediaManager implements TextureView.SurfaceTextureListener, IjkMe
                     break;
                 case HANDLER_RELEASE:
                     mediaPlayer.release();
-                    if (textureView.getParent() != null) {
+                    if (textureView != null && textureView.getParent() != null) {
                         ViewGroup container = (ViewGroup) textureView.getParent();
                         container.removeView(textureView);
                     }
