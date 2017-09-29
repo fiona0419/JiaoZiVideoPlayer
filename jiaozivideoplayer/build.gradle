@@ -34,6 +34,10 @@ dependencies {
 //    compile 'tv.danmaku.ijk.media:ijkplayer-arm64:0.8.3'
     compile 'tv.danmaku.ijk.media:ijkplayer-x86:0.8.3'
 //    compile 'tv.danmaku.ijk.media:ijkplayer-x86_64:0.8.3'
+
+    /** JieCaoVideoPlayer **/
+    // https://github.com/flztsj/JieCaoVideoPlayer
+    compile "com.github.flztsj:JieCaoVideoPlayer:4.8.13beta"
 }
 
 apply from: '../gradle/maven_push.gradle'
